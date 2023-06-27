@@ -2,7 +2,6 @@
 
 
 import requests
-from termcolor import colored as cl
 api_key = '649b1d2f4aadf0.76487539'
 
 def get_stock_news(stock, api_key):
@@ -14,7 +13,6 @@ def get_stock_news(stock, api_key):
     for i in range(10):
         title = news_json[-i]['title']
         news.append(title)
-        print(cl('{}. '.format(i+1), attrs = ['bold']), '{}'.format(title))
     
     return news
 
@@ -29,7 +27,6 @@ def get_customized_news(stock, start_date, end_date, n_news, api_key, offset = 0
     for i in range(len(news_json)):
         title = news_json[-i]['title']
         news.append(title)
-        print(cl('{}. '.format(i+1), attrs = ['bold']), '{}'.format(title))
     
     return news
 
