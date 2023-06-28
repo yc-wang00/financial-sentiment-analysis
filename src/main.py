@@ -7,8 +7,9 @@ import pandas as pd
 from stock_news_utils import get_stock_news
 from iris.sdk import infer
 
-# Read API key
-with open(".eod_api_key", "r") as f:
+
+# Read API key from EOD
+with open(".api_key", "r") as f:
     api_key = f.read().strip()
 
 example = [
@@ -85,7 +86,7 @@ def clear_button():
 
 if __name__ == "__main__":
     if not api_key:
-        st.write("__:red[Please enter your EOD Historical Data API key in .eod_api_key file!]__")
+        st.write("__:red[Please enter your EOD Historical Data API key in .api_key file!]__")
         st.stop()
 
     st.title("Stock News Sentiment Analysis")
