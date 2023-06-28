@@ -1,15 +1,15 @@
+"""streamlit app for stock news sentiment analysis"""
+
+# ───────────────────────────────────────────────────── imports ────────────────────────────────────────────────────── #
+
 import streamlit as st
 import pandas as pd
 from stock_news_utils import get_stock_news
 from iris.sdk import infer
 
+# Read API key
 with open(".eod_api_key", "r") as f:
     api_key = f.read().strip()
-
-if not api_key:
-    st.write("__:red[Please enter your EOD Historical Data API key in .eod_api_key file!]__")
-    st.stop()
-
 
 example = [
     "Rivian’s Stock Price Rises",
@@ -30,6 +30,9 @@ example = [
 
 label_map = {"LABEL_0": "negative", "LABEL_1": "neutral", "LABEL_2": "positive"}
 
+# --------------------------------------------------------------------------------------------------
+#                                      Initialize Session State
+# --------------------------------------------------------------------------------------------------
 
 # initialize session state
 if "clicked" not in st.session_state:
@@ -43,6 +46,10 @@ if "infer_label" not in st.session_state:
 
 if "infer_score" not in st.session_state:
     st.session_state.infer_score = []
+
+# --------------------------------------------------------------------------------------------------
+#                                              Buttons
+# --------------------------------------------------------------------------------------------------
 
 
 def click_button():
@@ -72,33 +79,46 @@ def clear_button():
     st.session_state.infer_score = []
 
 
-st.title("Stock News Sentiment Analysis")
-st.write("This app retrieves the latest news for a stock and performs sentiment analysis on the news.")
+# ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
+#                                                    Streamlit Main                                                    #
+# ──────────────────────────────────────────────────────────────────────────────────────────────────────────────────── #
 
-stock_symbol = st.text_input("Please enter the symbol for a stock (e.g. AAPL for Apple):")
-st.write("You entered: ", stock_symbol)
+if __name__ == "__main__":
+    if not api_key:
+        st.write("__:red[Please enter your EOD Historical Data API key in .eod_api_key file!]__")
+        st.stop()
 
-col1, col2, col3 = st.columns(3)
-col1.button("Retrieve News", on_click=click_button)
+    st.title("Stock News Sentiment Analysis")
+    st.write("This app retrieves the latest news for a stock and performs sentiment analysis on the news.")
 
-if st.session_state.clicked:
-    news = get_stock_news(stock_symbol, api_key)
-    if not news:
-        news = example
-        stock_symbol = "TSLA"  # use TSLA as example
-        st.write("__:red[Error retrieving news! We will use example batch from TSLA.]__")
-    st.session_state.news = news
+    stock_symbol = st.text_input("Please enter the symbol for a stock (e.g. AAPL for Apple):")
+    st.write("You entered: ", stock_symbol)
 
-    st.markdown(f"## News: {stock_symbol}")
+    # divide the screen into 3 columns
+    col1, col2, col3 = st.columns(3)
 
-    df = pd.DataFrame(columns=["News"])
-    df["News"] = news
-    df["Score"] = st.session_state.infer_score or [""] * len(news)
-    df["Sentiment"] = st.session_state.infer_label or [""] * len(news)
-    st.table(df)
+    # retrieve button for retrieving news
+    col1.button("Retrieve News", on_click=click_button)
 
-    # infer button for inferencing
-    col2.button("Analyze News", on_click=infer_button)
+    if st.session_state.clicked:
+        news = get_stock_news(stock_symbol, api_key)
+        if not news:
+            news = example
+            stock_symbol = "TSLA"  # use TSLA as example
+            st.write("__:red[Error retrieving news! We will use example batch from TSLA.]__")
+        st.session_state.news = news
 
-    # clear button for clearing all session state
-    col3.button("Clear All", on_click=clear_button)
+        st.markdown(f"## News: {stock_symbol}")
+
+        # display news and sentiment analysis results
+        df = pd.DataFrame(columns=["News"])
+        df["News"] = news
+        df["Score"] = st.session_state.infer_score or [""] * len(news)
+        df["Sentiment"] = st.session_state.infer_label or [""] * len(news)
+        st.table(df)
+
+        # infer button for inferencing
+        col2.button("Analyze News", on_click=infer_button)
+
+        # clear button for clearing all session state
+        col3.button("Clear All", on_click=clear_button)
