@@ -3,7 +3,12 @@ import pandas as pd
 from stock_news_utils import get_stock_news
 from iris.sdk import infer
 
-api_key = '649b1d2f4aadf0.76487539'
+with open(".eod_api_key", "r") as f:
+    api_key = f.read().strip()
+
+if not api_key:
+    st.write("__:red[Please enter your EOD Historical Data API key in .eod_api_key file!]__")
+    st.stop()
 
 
 example = ['Rivian’s Stock Price Rises',

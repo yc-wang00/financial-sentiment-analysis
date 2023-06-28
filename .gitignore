@@ -160,3 +160,4 @@ cython_debug/
 #.idea/
 
 model_storage/
+.eod_api_key
