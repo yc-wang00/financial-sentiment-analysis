@@ -161,3 +161,4 @@ cython_debug/
 
 model_storage/
 .eod_api_key
+.ruff_cache
