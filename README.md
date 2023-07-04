@@ -90,5 +90,5 @@ streamlit run src/main.py
 
 ## ⛏️ Built Using <a name = "built_using"></a>
 
-- [TitanML](https://app.titanml.co/) - NLP Optimization Platform
+- [TitanML](https://www.titanml.co/) - NLP Optimization Platform
 - [Streamlit](https://streamlit.io/) - Python app framework
